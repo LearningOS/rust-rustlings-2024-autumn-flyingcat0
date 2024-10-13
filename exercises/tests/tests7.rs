@@ -19,7 +19,6 @@
 // When setting up configurations, we can `println!` in the build script
 // to tell Cargo to follow some instructions. The generic format is:
 //
-//     println!("cargo:{}", your_command_in_string);
 //
 // Please see the official Cargo book about build scripts for more
 // information:
@@ -34,7 +33,6 @@
 // Execute `rustlings hint tests7` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
 
 fn main() {}
 

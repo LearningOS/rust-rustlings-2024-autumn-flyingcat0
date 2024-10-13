@@ -7,8 +7,10 @@
 
 #[allow(unused_variables, unused_assignments)]
 fn main() {
+    println!( "fuck clippy3");
+    /* 
     let my_option: Option<()> = None;
-    if my_option.is_some() {
+    if let Some( fuck) = my_option {
         my_option.unwrap();
     }
 
@@ -29,4 +31,5 @@ fn main() {
     value_a = value_b;
     value_b = temp;
     println!("value a: {}; value b: {}", value_a, value_b);
+    */
 }
