@@ -2,7 +2,6 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -38,6 +37,18 @@ where
 
     pub fn add(&mut self, value: T) {
         //TODO
+        self.items.push( value);
+        self.count += 1;
+
+        let mut current_index = self.count;
+        while current_index > 1 {
+            let parent_index = self.parent_idx( current_index);
+            if ( self.comparator)( &self.items[parent_index], &self.items[current_index]) {
+                break;
+            }
+            self.items.swap( parent_index, current_index);
+            current_index = parent_index;
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -85,7 +96,46 @@ where
 
     fn next(&mut self) -> Option<T> {
         //TODO
-		None
+        if 0 == self.count {
+            return None;
+        }
+
+        let result = Some( self.items.swap_remove( 1));
+        self.count -= 1;
+
+        let mut current_index = 1;
+		
+        loop {
+            let left_index = self.left_child_idx( current_index);
+            let right_index = self.right_child_idx( current_index);
+
+            let mut target_index = 0;
+
+            if left_index > self.count {
+                break;
+            }
+            else if right_index > self.count {
+                target_index = left_index;
+            }
+            else {
+                target_index = if ( self.comparator)( &self.items[left_index], &self.items[right_index]) {
+                    left_index
+                }
+                else {
+                    right_index
+                }
+            }
+
+            if ( self.comparator)( &self.items[current_index], &self.items[target_index]) {
+                break;
+            }
+            else {
+                self.items.swap( current_index, target_index);
+                current_index = target_index;
+            }
+        }
+
+        result
     }
 }
 
