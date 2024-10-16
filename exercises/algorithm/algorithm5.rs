@@ -38,9 +38,9 @@ impl Graph {
         while index < visit_order.len()
         {
             for item in &self.adj[visit_order[index]] {
-                if !visit_order.contains( *item) {
+                if !visit_order.contains( item) {
                     visit_order.push( *item);
-                    if visit_order.len() == adj.len() {
+                    if visit_order.len() == self.adj.len() {
                         return visit_order;
                     }
                 }
