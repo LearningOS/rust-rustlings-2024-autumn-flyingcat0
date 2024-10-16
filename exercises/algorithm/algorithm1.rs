@@ -3,17 +3,24 @@
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
 
+
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
 use std::vec::*;
 
 #[derive(Debug)]
-struct Node<T> {
+struct Node<T> 
+where
+    T: Ord + Clone + Display,
+{
     val: T,
     next: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Node<T> {
+impl<T> Node<T> 
+where
+    T: Ord + Clone + Display,
+{
     fn new(t: T) -> Node<T> {
         Node {
             val: t,
@@ -22,19 +29,28 @@ impl<T> Node<T> {
     }
 }
 #[derive(Debug)]
-struct LinkedList<T> {
+struct LinkedList<T> 
+where
+    T: Ord + Clone + Display,
+{
     length: u32,
     start: Option<NonNull<Node<T>>>,
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T> Default for LinkedList<T> 
+where
+    T: Ord + Clone + Display,
+{
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T> LinkedList<T> 
+where
+    T: Ord + Clone + Display,
+{
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -71,53 +87,37 @@ impl<T> LinkedList<T> {
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
 	{
 		//TODO
-        let mut x = list_a;
-        let mut y = list_b;
-        let mut ret = Self::new();
-        let mut index_a = 0;
-        let mut index_b = 0;
+        let mut result = LinkedList::new();
+        let mut current_a = list_a.start;
+        let mut current_b = list_b.start;
 
-        loop {
-            let mut t1 = x.get( index_a);
-            let mut t2 = y.get( index_b);
-
-            if t1.is_none() {
-                while let Some( item) = t2 {
-                    ret.add( *item);
-                    index_b += 1;
-                    t2 = y.get( index_b);
+        while let (Some(node_a), Some(node_b)) = (current_a, current_b) {
+            unsafe {
+                if (*node_a.as_ptr()).val <= (*node_b.as_ptr()).val {
+                    result.add((*node_a.as_ptr()).val.clone()); 
+                    current_a = (*node_a.as_ptr()).next;
+                } else {
+                    result.add((*node_b.as_ptr()).val.clone());  
+                    current_b = (*node_b.as_ptr()).next;
                 }
-                break;
-            }
-
-            if t2.is_none() {
-                while let Some( item) = t1 {
-                    ret.add( *item);
-                    index_a += 1;
-                    t1 = x.get( index_a);
-                }
-                break;
-            }
-
-            let va = *t1.unwrap();
-            let vb = *t2.unwrap();
-            if va <= vb {
-                ret.add( va);
-                index_a += 1;
-            }
-            else {
-                ret.add( vb);
-                index_b += 1;
             }
         }
 
-        ret
-	}
+        let mut remaining = if current_a.is_some() { current_a } else { current_b };
+        while let Some(node) = remaining {
+            unsafe {
+                result.add((*node.as_ptr()).val.clone());  
+                remaining = (*node.as_ptr()).next;
+            }
+        }
+
+        result
+    }
 }
 
 impl<T> Display for LinkedList<T>
 where
-    T: Display,
+    T: Ord + Clone + Display,
 {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self.start {
@@ -129,7 +129,7 @@ where
 
 impl<T> Display for Node<T>
 where
-    T: Display,
+    T: Ord + Clone + Display,
 {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self.next {
